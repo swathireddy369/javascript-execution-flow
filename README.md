@@ -28,3 +28,5 @@ The focus is on mastering how JavaScript handles functions, scopes, memory alloc
 
 Example Structure:
 
+//execution context 
+//hoisting variable and function
