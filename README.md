@@ -30,3 +30,5 @@ Example Structure:
 
 //execution context 
 //hoisting variable and function
+//functions working and variable scope
+//shortest java program
