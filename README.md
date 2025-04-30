@@ -34,3 +34,6 @@ Example Structure:
 //shortest java program
 //this === window
 //undefined(allocated memory at GEC ) and defined (not allocated any memory yet)
+//loosely type(any type of data can be assigned)
+//lexical environment 
+//scope chain

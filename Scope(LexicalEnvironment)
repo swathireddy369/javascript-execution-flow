@@ -1,0 +1,14 @@
+function a(){//its local memory and LE of its parent
+var b=9;//initially undefined
+function b(){ //it creates new execution context with lexical env as well
+    //it conains b's memory and lexical env of its parent in case a lexical env
+    function c(){//it again crrates new execution context and lexical env with memory of its and its parent lexical env
+     //here it conatins c meory and b lexical env
+     b();
+     //total here it checks first in b's local memory if it does not exist then it cehckis its lexical env where it conatins its parent lexical env.this loop continues till we find b variable or it's being exhausted to reach GEC lexical env (null)
+    }
+    c();
+}
+}
+//GEC(global execution context) it contains Lexical env of its parent here it is null becuase a has no parent
+a();
