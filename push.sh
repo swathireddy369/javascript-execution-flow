@@ -9,10 +9,14 @@ if [ -z "$file" ]; then
   exit 1
 fi
 
-# Create a dynamic commit message with the file name
-commit_message="auto commit:Updated $file"
+# Use custom commit message if provided, else use default
+if [ -n "$1" ]; then
+  commit_message="$1"
+else
+  commit_message="auto commit: Updated $file"
+fi
 
-# Add changes, commit with the dynamic message, and push
+# Add changes, commit with the message, and push
 git add .
 git commit -m "$commit_message"
 git push
