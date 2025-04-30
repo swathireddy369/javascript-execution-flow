@@ -2,14 +2,14 @@ console.log(a);//(ReferenceError as it does being allocated for in execution con
 console.log(b);//undefined(global execution context) global block
 //here aslo ref error possible even without declarting var and try to access it
 
-let a=9;
-var b=9;
+// let a=9;
+// var b=9;
 /////syntax error
 
-let a=9;
-let a=9;
+// let a=9;
+// let a=9;
 
-let a=9;
+// let a=9;
 var a=10;
 
 const a;SyntaxError
@@ -18,7 +18,7 @@ a=1000;
 
 // for var it not
  var a=9;
- var a=10; (no SyntaxError here)
+ var a=10; //(no SyntaxError here)
 
 //  type error
  const a=10;
