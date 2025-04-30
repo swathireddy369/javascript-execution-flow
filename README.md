@@ -32,3 +32,5 @@ Example Structure:
 //hoisting variable and function
 //functions working and variable scope
 //shortest java program
+//this === window
+//undefined(allocated memory at GEC ) and defined (not allocated any memory yet)
