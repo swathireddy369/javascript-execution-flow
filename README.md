@@ -191,8 +191,7 @@ Closures formed here hold a reference to the same variable i.
 
 ✅ Solution: Use let to Fix the Above Issue
 javascript
-Copy
-Edit
+
 for (let i = 0; i <= 5; i++) {
     setTimeout(function sample() {
         console.log("let", i);
