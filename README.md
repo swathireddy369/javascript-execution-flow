@@ -151,3 +151,24 @@ Function Scope
 
 
 
+Day-3:
+
+//variable is a conatiner which holds value
+//java static and strongly type language
+//static:because its data type defined initailly
+//after defined data type we should assign the values as per that datatype range itself it tells us java is stronlgy typed as well
+//variable names can contain alll unicodes
+//variable starting should be either of these _,$ or character not digit
+//if we have two words in variabke anme then should follow camelcase
+//if we define static variable then give all captail letters for that
+
+
+Day-4:
+
+Closure: clousre defines a combination of function with its lexical environment bundles together
+
+when we return a function it return with lexical env together(actullay it rembebers it lexical env)
+
+it does not hold value while retruning function it actually hold reference to lexical 
+
+
