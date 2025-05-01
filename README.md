@@ -165,36 +165,108 @@ Day-3:
 
 Day-4:
 
-Closure: clousre defines a combination of function with its lexical environment bundles together
+## 🔒 JavaScript Closures
 
-when we return a function it return with lexical env together(actullay it rembebers it lexical env)
+### 📘 What is a Closure?
 
-it does not hold value while retruning function it actually hold reference to lexical 
+- A closure defines a combination of a function with its lexical environment bundled together.
+- When a function is returned, it returns with its lexical environment (i.e., it remembers its lexical scope).
+- It does not hold values directly — it holds a **reference** to the lexical scope.
 
+---
 
+### 🔁 Example: Unexpected Behavior with `var`
 
-for(var i=0;i<=5;i++){
-    setTimeout(function sample(){console.log("var",i)}//it forms clousre and holds the reference of i once the timer is done then it prints pointing to ref and print value
-,1000)//it just show 6 because javascript function does not wait for any other function menas it does not wait for settimout to complete times firsy it just do the loop itself after loop done if timer done then that setimeout function execute
-};
+```javascript
+for (var i = 0; i <= 5; i++) {
+    setTimeout(function sample() {
+        console.log("var", i);
+    }, 1000);
+}
+It prints 6 six times.
 
-//to avoid above issue we can simply use let as let and const are block scope when closure form sit just create new copy of variable so it remberbers its new copy Reference itself 
-for(let i=0;i<=5;i++){
-    setTimeout(function sample(){console.log("let",i)}//it forms clousre and holds the reference of i once the timer is done then it prints pointing to ref and print value
-,1000)//it just show 6 because javascript function does not wait for any other function menas it does not wait for settimout to complete times firsy it just do the loop itself after loop done if timer done then that setimeout function execute
-};
+JavaScript does not wait for setTimeout to complete; the loop finishes first.
 
-// then what if we have to use var only 
+Closures formed here hold a reference to the same variable i.
 
-for(var i=0;i<=5;i++){
-    function X(i){//it creates local copy of i for every block for clousre refres to new reference evry time
-    setTimeout(function sample(){console.log("var with function args",i)}//it forms clousre and holds the reference of i once the timer is done then it prints pointing to ref and print value
-,1000)//it just show 6 because javascript function does not wait for any other function menas it does not wait for settimout to complete times firsy it just do the loop itself after loop done if timer done then that setimeout function execute
-    };
-X(i);
-};
+✅ Solution: Use let to Fix the Above Issue
+javascript
+Copy
+Edit
+for (let i = 0; i <= 5; i++) {
+    setTimeout(function sample() {
+        console.log("let", i);
+    }, 1000);
+}
+let is block-scoped.
 
+A new copy of i is created in each iteration, and the closure remembers its own reference.
 
+✅ Another Solution: Use Function Wrapper with var
+javascript
 
+for (var i = 0; i <= 5; i++) {
+    function X(i) {
+        setTimeout(function sample() {
+            console.log("var with function args", i);
+        }, 1000);
+    }
+    X(i);
+}
+A new scope is created inside X(i) function.
 
+Closure holds reference to the local copy of i.
 
+🧠 Closure Behavior in Lexical Scope
+Each function in JavaScript has access to its parent lexical environment.
+
+Even if the function is executed outside its original scope, it remembers where it was created.
+
+javascript
+
+function outer() {
+    var outer = 10;
+    function inner() {
+        console.log(outer); // lexical outer env
+    }
+    return inner;
+}
+outer()();
+outer() returns the inner function.
+
+outer()() executes the returned inner().
+
+javascript
+
+function outer(b) {
+    function inner() {
+        console.log(outer, b); // lexical outer env
+    }
+    var outer = 10;
+    return inner;
+}
+outer("hello")();
+inner() forms a closure and remembers b and the outer scope.
+
+⚠️ Memory Considerations
+Closures may lead to over-consumption of memory.
+
+Variables captured in closures are not garbage collected until the closure is destroyed.
+
+Can lead to memory leaks if not managed properly.
+
+🧹 Garbage Collection and Closures
+Garbage Collector: A program in JavaScript engines that frees up space for unused variables.
+
+javascript
+
+function a() {
+    var a = 9, z = 8;
+    return function b() {
+        console.log(a);
+    }
+}
+a()();
+Closure is formed with a only because z is unused and gets garbage collected.
+
+Accessing a works, but accessing z throws a ReferenceError.
