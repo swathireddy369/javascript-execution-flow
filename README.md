@@ -35,7 +35,7 @@ Example Structure:
 //shortest javascript program
 //this === window
  DAY - 3:
-//undefined(allocated memory at GEC ) and defined (not allocated any memory yet)
+//undefined(allocated memory at GEC ) and notdefined (not allocated any memory yet)
 //loosely type(any type of data can be assigned)
 //lexical environment 
 //scope chain
@@ -57,9 +57,7 @@ Accessing let or const before initialization → ReferenceError.
 
 Unlike var, which is hoisted and initialized with undefined, let and const are not initialized until the interpreter evaluates their definition.
 
-js
-Copy
-Edit
+
 console.log(a); // ReferenceError
 console.log(b); // undefined (due to var hoisting)
 
@@ -74,9 +72,7 @@ Not defined (for var)
 In TDZ (for let and const)
 
 📌 SyntaxError:
-js
-Copy
-Edit
+
 let a = 10;
 let a = 10; // ❌ Redeclaration with let
 
@@ -85,15 +81,14 @@ var a = 9;  // ❌ Conflict with let
 
 const a;    // ❌ Must initialize const
 📌 TypeError:
-js
-Copy
-Edit
+
 const a = 10;
 a = 9;      // ❌ Cannot assign new value to const
 🔹 Shortest JavaScript Program
 An empty file is a valid JS program.
 
 🔹 Functions and Variable Scope
+
 Functions create their own scope.
 
 Variables defined inside functions are not accessible outside.
@@ -101,10 +96,10 @@ Variables defined inside functions are not accessible outside.
 🔹 this === window
 In the global context (non-strict mode), this refers to the window object.
 
-🔹 undefined vs defined
+🔹 undefined vs not-defined
 undefined: memory allocated but not initialized.
 
-defined: not allocated any memory yet.
+not-defined: not allocated any memory yet.
 
 🔹 Loosely Typed Language
 JS allows variables to hold values of any type dynamically.
@@ -120,9 +115,7 @@ Each lexical environment has a reference to its outer environment.
 Enables variable access up the chain.
 
 🔸 Example: Block Scope & Variable Declarations
-js
-Copy
-Edit
+
 var b = 9;  // global scope
 let a = 8;  // script scope
 
@@ -138,6 +131,7 @@ let a = 8;  // script scope
 console.log(a); // 8 (from script)
 console.log(b); // 20 (var is globally updated)
 console.log(c); // ReferenceError (c is block-scoped)
+
 🔹 Scope
 Scope defines where you can access a particular variable or function:
 
@@ -151,16 +145,6 @@ Function Scope
 
 
 
-Day-3:
-
-//variable is a conatiner which holds value
-//java static and strongly type language
-//static:because its data type defined initailly
-//after defined data type we should assign the values as per that datatype range itself it tells us java is stronlgy typed as well
-//variable names can contain alll unicodes
-//variable starting should be either of these _,$ or character not digit
-//if we have two words in variabke anme then should follow camelcase
-//if we define static variable then give all captail letters for that
 
 
 Day-4:
@@ -221,7 +205,7 @@ Each function in JavaScript has access to its parent lexical environment.
 
 Even if the function is executed outside its original scope, it remembers where it was created.
 
-javascript
+
 
 function outer() {
     var outer = 10;
@@ -235,7 +219,7 @@ outer() returns the inner function.
 
 outer()() executes the returned inner().
 
-javascript
+
 
 function outer(b) {
     function inner() {
@@ -257,7 +241,7 @@ Can lead to memory leaks if not managed properly.
 🧹 Garbage Collection and Closures
 Garbage Collector: A program in JavaScript engines that frees up space for unused variables.
 
-javascript
+
 
 function a() {
     var a = 9, z = 8;
@@ -269,3 +253,101 @@ a()();
 Closure is formed with a only because z is unused and gets garbage collected.
 
 Accessing a works, but accessing z throws a ReferenceError.
+
+Day-5:
+//function statement and function declaration as well
+function xyz(){
+    console.log("hii"); 
+}
+
+//function expression
+// assigning function as a value to the variable
+
+var a=function (){
+       console.log("hii"); 
+}
+
+//anonymous function 
+//a function which does not contain any name
+function (){ //identifier exepcted
+
+}
+//but we can use anonymous functions in function expression
+
+//Named function Expression
+//  nothing usually we use anonymous function in function expressions but if we define name to it then it considered as named function expression
+
+var b=function xyz(){
+    console.log("hello");
+    console.log(xyz); //here it does not throw any error as it is already had an entry in local scope of xyz
+    
+}
+console.log(b);
+console.log(xyz); //as xyz has no entry in the global execution context it throws reference error as it is not defined
+
+
+//difference between [arameters and arguments
+
+// the function where we define and give names in the paranthesis are called as parameters (idetifiers,labels)
+// but from where we call that particular a\function and passing values to the parameters which we have defined while function declaration is knowmn as arguments(values) 
+
+
+function c( name, age){//these are parametrs
+console.log(name,age);
+
+}
+c("swathi","27");//these are arguments
+
+
+// First class functions
+//first class citizens
+// it's ability to treated as a vlue and passed as argument and return from function
+
+function y(x){
+console.log(x);
+return x;//it can aslo return a function 
+}
+
+y(function (){//it logs the anonymous function which we have passed
+
+})
+y(function z(){//ity logs the named function which we have passed
+
+})
+
+
+
+
+document.getElementById("clickMe").addEventListener("click",function (){ //call back function
+console.log("button clicked");
+});
+//whenever event happens then only this call back function enters into call stack
+
+
+//closures demo with event listners
+let count=0;
+document.getElementById("clickMe").addEventListener("click",function (){ //call back function
+    console.log("button clicked",count++);
+    });//here we are using gloabl variable its is not good practise
+
+
+    // create closure 
+
+  function attacheventListner(){
+    let count=0;
+document.getElementById("clickMe").addEventListener("click",function (){ //call back function
+    console.log("button clicked",count++);
+    });//here we are using gloabl variable its is not good practise
+    }
+    attacheventListner();
+
+    // it forms a clouse with count 
+
+
+    //scope demo with event listeners
+
+    // event listener have same scope as clouse has
+
+    //Garbage collection for event handlers
+
+    // event listeners are too heavy because they use memory after the event happend should be garbage collected but we dont know who is going to trigger the event again so one of the considering disadavnatge of event listeners
