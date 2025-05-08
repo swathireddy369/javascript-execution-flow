@@ -12,9 +12,9 @@ var a=function (){
 
 //anonymous function 
 //a function which does not contain any name
-function (){ //identifier exepcted
+// function (){ //identifier exepcted
 
-}
+// }
 //but we can use anonymous functions in function expression
 
 //Named function Expression

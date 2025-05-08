@@ -351,3 +351,235 @@ document.getElementById("clickMe").addEventListener("click",function (){ //call 
     //Garbage collection for event handlers
 
     // event listeners are too heavy because they use memory after the event happend should be garbage collected but we dont know who is going to trigger the event again so one of the considering disadavnatge of event listeners
+
+
+
+    Day 6:
+    event loop and call back queue
+
+    here as we are using settimeout,fetch,localstorage,console.log and document.get all these are not javascript things 
+    although these all are browser things okay in our javascript we have functions so to execute those function in browser we have javascript engine inside we have call stack so js engine just execute the function which are in stack as soon as they enter into it ,now comes into topic so in this nature js doesnot wait for any other yhings to execite in functions which are in stack as it is single thread and syncronous but if we need some timer ,fetch and log kind of behaviour browser provides web api's to access these settime and fetch all those browery things to access in our js by using global window ,as it is global mention window.console.log or window.settimout does not explicityly required .whenever w use console.log in our js code it simply call wiindow.console api to get access to the console panel in browser and our message which we provided dispaly in that pannel i got suprised i have been using console.log without knowing this stuff. 
+    this is fine
+    what if we have to use settimeout and fetch in our js then lets see about set timeout whenevr we see settimout in our code which we executing currenlty the it simple call window.fecth then it simple register call backa nd attach timer to it in webapi's and js engne continues its work as i mentioned earlier js does not wait for anything to execute okay after my call stack is being empty then event loop always monitor whetehr call stack is empty or not and whether call back conatins anything to execute.
+    here once the register call brower timer as soon as expired then it direclty pused to call back queue now event loop get to know one cb is inside call back queue then if event loop ckecing if call stack becomes empty the is pull out the cb from callback queue and push it to call stack this is the way our call back executes.then coming to fecth  it is not like call back queue little difference is there.whenevr our js engine encpounter any fetch call it simply call window.fecth api like timout but once window .fecth api calls it regitert he promise in web api's and once the promise gets resolved then it got pushed into microtask queue observer not callback queue its microtaskqueue
+
+
+
+    callback pusehd to callbackqueue
+    but fecth,mutationobserver things pusehed to microtaskqueue and microtaskqueue has high prioty than call back queue so as soon as event loop got to know somehonh is waiting in the mircostaskqueue as priority cincers it first pulled out the microtask qeeu adn pusehd into call stack queue as soon as it becoems empty once the microtaskqueuebecome empty then only event loop will take care of call backqueue
+
+    here we have mutation observer see it also enter into the microtaskqueue like promises here it observes that any dom content changes if happend it also pused to micortask queue as iyt high priority than call back
+
+
+    here we have a concept called starvation : the call back queeu tasks being delayed by having microtask piled up recursively 
+
+
+    JavaScript Event Loop and Asynchronous Operations
+Call stack, Web APIs, callback queue, and microtask queue work together to handle JavaScript execution:
+
+JavaScript Engine:
+
+Has a call stack to execute functions
+Single-threaded and synchronous
+Executes code immediately without waiting
+
+
+Browser Web APIs:
+
+Not part of JavaScript but accessible via global window object
+Examples: setTimeout, fetch, localStorage, console.log, document.getElementById
+Don't need explicit window. prefix (it's implied)
+
+
+Callback Queue (Task Queue):
+
+Contains callbacks from timers and I/O operations
+Lower priority than microtask queue
+Examples: setTimeout, setInterval callbacks
+
+
+Microtask Queue:
+
+Higher priority than callback queue
+Contains promises and mutation observers
+Examples: fetch (Promise), MutationObserver
+
+
+Event Loop:
+
+Monitors call stack and queues
+When call stack is empty:
+
+First checks microtask queue and moves tasks to call stack
+Only after microtask queue is empty, checks callback queue
+
+
+
+
+Execution Process:
+
+setTimeout: Register callback in Web API → timer expires → callback queue → call stack
+fetch: Register promise in Web API → resolved → microtask queue → call stack
+
+
+Starvation:
+
+Callback queue tasks get delayed by recursive microtasks
+Higher priority microtasks continuously push new microtasks
+Callbacks in the task queue never get processed
+
+https://claude.ai/public/artifacts/e25c5b19-4008-49ad-a06d-b270ca025c7b
+https://claude.ai/public/artifacts/06ea46e6-c1da-47fb-a185-99498e5ef92c
+
+Java script engine:
+
+to execute piece of js code we need javascript runtime environ ment it contains js engine,web api,microtaskqueue,call back queue and event loop so here broswer has JRe and nodejs has JRE where the some api are same together but some are different right.
+
+here lets come to js engine
+
+every brower has different js engines it's not a machine it just piece of code written in c++ 
+it has been executed by our brower.
+
+the process includes 
+
+js code-parsing(generate tokens - AST((ast exploer)(abstarct syntax tree))- interpreter +compilation 
+earlier did not have compiler for javascript it direclty execute the code later versions has jit compiler it make code efficient as much as it can(here are some techniques inlining,copy elusion,inline caching) and convert it into bytecode althought execution and compilaion done paralley 
+if we use interpreter it's fast whereas compiler give efficiency
+the execution can be done using memory heap and call stack as we know call stack well and come to memory heap it allocats memory to the functions and variables which are in callstack and once execution is done and if there any unused var or function found just do garbage colletion by mark sweep algo and the very famous js engine is V8 chrome one it has iginite interpret and turbo fan compiler and mark and sweep orinaooc garbage colletor lets go to v8 blog and explore more on it 
+
+as we have processureal ,functional and object oriented languages here java script can do all of these lets explore more it does all these
+
+
+
+
+JavaScript Runtime Environment
+JavaScript Runtime Environment (JRE)
+
+Required to execute JavaScript code
+Contains: JS Engine, Web APIs, Microtask Queue, Callback Queue, Event Loop
+Different environments: Browsers and Node.js have their own JREs
+
+Some APIs are common between them
+Some APIs are environment-specific
+
+
+
+JavaScript Engine
+
+Not a machine but code written in C++
+Executed by browsers
+Each browser has its own JS engine
+Famous example: V8 (Chrome, Node.js)
+
+JavaScript Processing Flow
+
+Parsing:
+
+Generates tokens
+Creates AST (Abstract Syntax Tree)
+Tool: AST Explorer
+
+
+Execution:
+
+Earlier versions: Only interpreter
+Modern versions: JIT (Just-In-Time) Compiler
+Execution and compilation happen in parallel
+Interpreter: Fast startup
+Compiler: Better efficiency
+
+
+Optimization Techniques:
+
+Inlining
+Copy elision
+Inline caching
+
+
+Execution Environment:
+
+Memory Heap: Allocates memory to functions and variables
+Call Stack: Execution context
+
+
+Garbage Collection:
+
+Mark and Sweep algorithm
+Cleans unused variables and functions
+
+
+
+V8 Engine Components
+
+Ignition: Interpreter
+TurboFan: Compiler
+Orinoco: Garbage collector
+
+JavaScript Programming Paradigms
+
+Procedural
+Functional
+Object-oriented
+
+
+
+ASP Exploer.net
+v8
+marker sweep
+Ecmascript
+
+
+V8:
+
+v8 is the javascript engine which is developed by google chrome and written in c++(google engineers) and it uses in the  platforms like chrome and node.js
+ 
+javascript source code-> parser & AST Generator -> then 
+Interpretor(iginition) lightweight interpretor executes the code quickyl before that conver it into bytecode to execute quickly but not as much as machinecode.
+
+turbofan (JIT compiler) it monitors frequenclty used code 
+it optimizes and   compiles byte code to efficient machinecode 
+
+Garbage collector: do memory management by efficient garbage collection system for unused var and functions eg: mark-sweeper,mark-compact,scavanger 
+
+optimizations: inline caching,hidden calsses
+
+
+V8 Processing Pipeline
+1. JavaScript Source Code
+
+Starting point: Raw JavaScript code
+
+2. Parser & AST Generator
+
+Parses JavaScript source code
+Creates Abstract Syntax Tree (AST)
+
+3. Interpreter (Ignition)
+
+Lightweight interpreter
+Converts code to bytecode
+Executes code quickly (but not as fast as machine code)
+
+4. JIT Compiler (TurboFan)
+
+Monitors frequently used code
+Optimizes and compiles bytecode to efficient machine code
+
+5. Garbage Collector
+
+Handles memory management
+Removes unused variables and functions
+Implements efficient collection systems:
+
+Mark-sweep
+Mark-compact
+Scavenger
+
+
+
+Key Optimizations
+
+Inline caching
+Hidden classes (for organization)
+
+https://claude.ai/public/artifacts/fd52059d-e388-40de-abf2-317a00114bc7
