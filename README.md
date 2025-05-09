@@ -583,3 +583,212 @@ Inline caching
 Hidden classes (for organization)
 
 https://claude.ai/public/artifacts/fd52059d-e388-40de-abf2-317a00114bc7
+
+Day 7:
+
+concurrency model:
+trust settimeout issues:
+as the part of setting up the environment so use live server to run our small website or the things which we are running in our index.html i came to know that witout body or head tag we can not initilaize live server wow amazing i was amazed
+
+as i understand concurrency means it s ability to a system to manage multiple tasks without blocking each other,they do not do necciserly simoultaniously but they manage effecltivly without blocking each other, like a eaxmple a chef boiling water and put aside meanwhile chopping vegetables here he is not doing the tasks at same time managing effiecenlty -----interleaving them on availability and readyness
+
+managing multiple tasks at same time
+
+
+
+here if we put setTimeout(function cb(){},0) even the timer set for 0ms still it regietrd as call back in web api's environment and it will be pushed to call stack through event loop only when the call stack becomes empty
+
+here javascript is single syncronous and fast execution beciase of we cannot block main thread execution for call backs or any other thing event loop should wait until call stack becmoes execute lets say we have code to execute time for 10ms after that 10ms execution and call stack became empoty then only our 0times cb will be pused to call stack
+
+
+
+JavaScript Concurrency Model Notes
+Core Concepts
+
+Concurrency: System's ability to manage multiple tasks without blocking each other
+
+Tasks don't run simultaneously but are interleaved efficiently
+Example: Chef boiling water while chopping vegetables (managing tasks efficiently)
+
+
+
+JavaScript's Single-Threaded Nature
+
+JavaScript is single-threaded and synchronous in execution
+Only one operation runs at a time on the main thread
+Cannot block main thread execution for callbacks
+
+Environment Setup
+
+Live server requires proper HTML structure (body/head tags) to initialize
+Must include basic HTML structure in index.html
+
+setTimeout Behavior
+
+Even with setTimeout(function cb(){}, 0):
+
+The callback is registered in Web APIs environment
+Timer is set (even if 0ms)
+Callback is pushed to callback queue
+Event loop waits until call stack becomes empty
+Only then is the callback pushed to call stack
+
+
+
+Execution Order
+
+If main code takes 10ms to execute:
+
+The 10ms code runs completely
+Call stack becomes empty
+Only then will the 0ms callback be pushed to call stack via event loop
+
+
+
+Why This Matters
+
+Understanding this model helps explain why asynchronous operations don't block execution
+Even "immediate" timeouts (0ms) must wait for current execution to complete
+JavaScript maintains its single-threaded nature while appearing to handle multiple tasks
+
+
+https://claude.ai/public/artifacts/f51e6545-3e8d-4bcc-801c-5a385bbb493e
+
+
+
+Higher order function:
+
+a functions takes function as paramter and return function and the function  which has been passed through this highe rorder function is known as call back
+const radius=[3,1,2,4];
+
+const calculateArea=function (radius){
+    const output=[];
+    for(let i=0;i<radius.length;i++){
+        output.push(Math.PI * radius[i] *radius[i]);
+    }
+    return output;
+}
+console.log(calculateArea(radius));
+
+const curcumference=function(radius){
+    const output=[];
+    for(let i=0;i<radius.length;i++){
+        output.push(2 * Math.PI * radius[i] );
+    }
+    return output;
+}
+console.log(curcumference(radius));
+
+const daimeter=function(radius){
+    const output=[];
+    for(let i=0;i<radius.length;i++){
+        output.push(2 *  radius[i] );
+    }
+    return output;
+}
+console.log(daimeter(radius));
+
+const radius=[3,1,2,4];
+function area(r){
+return Math.PI*r*r;
+}
+function circumference(r){
+    return Math.PI*r;
+}
+function daimeter(r){
+    return 2*r;
+}
+function calculate(radius,logic){ //higher order function //and here all the function which are passed as paramater to this function bemocome scall backs
+    let output=[];
+   for(let i=0;i<radius.length;i++){
+       output.push(logic(radius[i]));
+   }
+   return output;
+}
+console.log(calculate(radius,area));
+console.log(calculate(radius,circumference));
+console.log(calculate(radius,daimeter));
+
+
+
+console.log("============================prototype=======================");
+
+
+
+Array.prototype.calculate1 = function(logic){ //higher order function //and here all the function which are passed as paramater to this function bemocome scall backs
+    let output=[];
+   for(let i=0;i<this.length;i++){
+       output.push(logic(this[i]));
+   }
+   return output;
+}
+console.log("map",radius.map(area));// i was amazed with this i do not know it works like this before but i was using map  just map the element and remaining this would done my own 
+// to achieve map behaviour by using our function calculate lets make changes
+console.log("proptotypE",radius.calculate1(area));
+console.log("proptotypE",radius.calculate1(circumference));
+console.log("proptotypE",radius.calculate1(daimeter));
+
+Array.prototype in JavaScript
+Array.prototype is the foundation of JavaScript arrays, containing all the built-in methods and properties that every array can access. Here's what you need to know:
+Core Concept
+When you create any array in JavaScript, it inherits methods and properties from the Array.prototype object through JavaScript's prototype chain. This is what allows you to use methods like map(), filter(), and push() on any array.
+javascriptconst numbers = [1, 2, 3];
+numbers.map(x => x * 2); // [2, 4, 6]
+Key Array.prototype Methods
+Array methods fall into three main categories:
+1. Iteration Methods (Non-mutating)
+
+forEach() - Executes a function for each element
+map() - Creates a new array with results of calling a function
+filter() - Creates a new array with elements that pass a test
+reduce() - Reduces array to single value (accumulator pattern)
+some() - Tests if at least one element passes a test
+every() - Tests if all elements pass a test
+
+2. Mutation Methods (Modify original array)
+
+push() / pop() - Add/remove from end
+shift() / unshift() - Remove/add from beginning
+splice() - Change contents by removing/replacing elements
+sort() - Sorts elements
+reverse() - Reverses order of elements
+
+3. Access Methods (Non-mutating)
+
+slice() - Returns shallow copy of portion of array
+concat() - Joins arrays and returns new array
+join() - Joins elements into string
+indexOf() / lastIndexOf() - Find element positions
+includes() - Checks if array includes element
+flat() / flatMap() - Flatten nested arrays
+
+Extending Array.prototype
+You can add custom methods to all arrays by extending Array.prototype:
+javascriptArray.prototype.myCustomMethod = function() {
+  return this.map(item => item * 2);
+};
+
+[1, 2, 3].myCustomMethod(); // [2, 4, 6]
+However, this practice is generally discouraged in production code as it can lead to conflicts and unexpected behavior.
+Best Practices
+
+Leverage existing array methods instead of writing custom loops
+Use non-mutating methods when you want to preserve original data
+Avoid extending Array.prototype directly in production code
+Understand which methods mutate the original array and which don't
+
+The included diagram illustrates how Array.prototype connects to the Array constructor and individual array instances, plus the major method categories available on all arrays.
+
+https://claude.ai/public/artifacts/29027752-4a20-451f-a5a0-743050848a4b
+
+
+
+1.first class function: the ability to treat function as variable and pass function as argument it return the function and assign that return value to varibale is first calss function
+
+
+2.higher order functions: a function that allows function as argument and return function
+
+3.call back function a function that passed trhough argument fir another function
+
+
+here call back function passed as argument to huigher order function its abiloity is called first class function
