@@ -792,3 +792,125 @@ https://claude.ai/public/artifacts/29027752-4a20-451f-a5a0-743050848a4b
 
 
 here call back function passed as argument to huigher order function its abiloity is called first class function
+
+
+Day-8:
+
+// Sample array
+let arr = [5, 1, 3, 6, 2];
+
+// ========================== MAP ==========================
+console.log("================= MAP =================");
+// MAP: Creates a new array by applying a function to each element
+
+// Method 1: Named function declaration outside map
+function double(i) {
+    return i * 2;
+}
+console.log("Double:", arr.map(double));
+
+// Method 2: Anonymous function inside map
+console.log("Triple:", arr.map(function(i) {
+    return i * 3;
+}));
+
+// Method 3: Arrow function (most concise)
+console.log("Binary:", arr.map(i => i.toString(2)));
+
+
+// ========================== FILTER ==========================
+console.log("\n================= FILTER =================");
+// FILTER: Creates a new array with elements that pass a test
+
+// Method 1: Named function declaration
+function isOdd(i) {
+    return i % 2; // Non-zero values are truthy (odd numbers)
+}
+console.log("Odd numbers:", arr.filter(isOdd));
+
+// Method 2: Anonymous function
+console.log("Even numbers:", arr.filter(function(i) {
+    return i % 2 === 0;
+}));
+
+// Method 3: Arrow function
+console.log("Odd numbers (arrow):", arr.filter(i => i % 2 !== 0));
+
+
+// ========================== REDUCE ==========================
+console.log("\n================= REDUCE =================");
+// REDUCE: Accumulates array values into a single result
+
+// Method 1: Named function declaration
+function sum(acc, curr) {
+    acc += curr;
+    return acc;
+}
+console.log("Sum:", arr.reduce(sum, 0));
+
+// Method 2: Anonymous function
+console.log("Sum (anonymous):", arr.reduce(function(acc, curr) {
+    acc += curr;
+    return acc;
+}, 0));
+
+// Method 3: Finding maximum value
+console.log("Max value:", arr.reduce(function(acc, curr) {
+    if (acc < curr) {
+        acc = curr;
+    }
+    return acc;
+}, 0));
+
+// Method 4: Max with arrow function
+console.log("Max (arrow):", arr.reduce((acc, curr) => {
+    if (acc < curr) {
+        acc = curr;
+    }
+    return acc;
+}, 0));
+
+
+// ========================== PRACTICAL EXAMPLES ==========================
+console.log("\n================= PRACTICAL EXAMPLES =================");
+
+// Array of objects
+let people = [
+    {first: "Swathi", lastName: "Amaravadi", age: "27"}, 
+    {first: "Rajesh", lastName: "Kodakandla", age: "33"}, 
+    {first: "Gopireddy", lastName: "Amaravadi", age: "25"}, 
+    {first: "Anand", lastName: "Yannamaneni", age: "27"}
+];
+
+// Example 1: Map - Create full names array
+let fullNames = people.map(person => person.first + " " + person.lastName);
+console.log("Full names:", fullNames);
+
+// Example 2: Reduce - Count occurrences of each age
+let ageFrequency = people.reduce((acc, curr) => {
+    if (acc[curr.age]) {
+        acc[curr.age]++;
+    } else {
+        acc[curr.age] = 1;
+    }
+    return acc;
+}, {});
+console.log("Age frequency:", ageFrequency);
+
+// Example 3: Chaining methods - Get lastNames of people over 30
+let over30LastNames = people
+    .filter(person => person.age > 30)
+    .map(person => person.lastName);
+console.log("LastNames of people over 30:", over30LastNames);
+
+// Example 4: Alternative using reduce for the same operation
+let over30LastNamesAlt = people.reduce((acc, curr) => {
+    if (curr.age > 30) {
+        acc.push(curr.lastName);
+    }
+    return acc;
+}, []);
+console.log("LastNames of people over 30 (with reduce):", over30LastNamesAlt);
+
+
+https://claude.ai/public/artifacts/864c8182-bd9e-4d29-827a-2e21653dbf10
