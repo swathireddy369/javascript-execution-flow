@@ -914,3 +914,138 @@ console.log("LastNames of people over 30 (with reduce):", over30LastNamesAlt);
 
 
 https://claude.ai/public/artifacts/864c8182-bd9e-4d29-827a-2e21653dbf10
+
+
+
+
+================================
+Week -3
+
+Day -9
+
+callbacks: importance of callbacks
+asyncronous behaviour exist in javascript only because of callbacks although every feature has its own white and black side so here as we coverd white face of callbacks as asynronous nature in javascript however black face would be 
+1)callbackhell:
+
+calling one callback inside another function and one more call back inside that callback this chaining is defined as callback hell
+
+2)inversion control: as we passing our callback to another function then we are missing control of that callback function althpugh it has been controlled by function which it has been passed through
+
+
+Asynchronous behavior exists in JavaScript only because of callbacks.
+
+Although every feature has its own white and black side, here we covered the white side of callbacks — that is, the asynchronous nature in JavaScript.
+
+However, the black side would be:
+
+1) Callback Hell
+Calling one callback inside another function, and then one more callback inside that — this chaining is what we call callback hell.
+
+2) Inversion of Control
+When we pass our callback to another function, we lose control over that callback. It’s now managed by the function we passed it to.
+https://claude.ai/public/artifacts/7361e1d4-755e-4cf5-9c0b-32e5573ced9e
+
+
+Topic 2:
+What is a Promise?
+A Promise is an object which represents eventual completion or failure of an asynchronous operation.
+
+Purpose of Promise:
+As we discussed earlier, we have the black side of callback usage in our JavaScript applications. Those are:
+
+Callback Hell
+
+Inversion of Control
+
+To resolve those issues, we need Promises.
+
+Inversion of Control:
+Here, we are giving control of our function to another function by passing it as a callback.
+So in that case, we are not aware of what’s happening behind the scenes — it may call our callback twice or may skip it, depending on the code of the function we passed our callback to.
+
+Example of Inversion of Control:
+
+javascript
+Copy
+Edit
+orderPlace(cart, function redirectToPayment(orderId) {
+    console.log("payment");
+});
+// here we lost our control on the function which we are passing through another
+// this is defined as inversion of control
+// so to avoid that we use:
+
+javascript
+Copy
+Edit
+const promis = orderPlace();
+promis.then(function redirectToPayment() {
+    console.log("payment")
+});
+To gain trust, we just call our API function — it gives us a Promise (which has 3 states: pending, resolved, rejected).
+
+Find the above definition for Promise.
+The structure of a Promise object:
+
+javascript
+Copy
+Edit
+{
+  prototype: Promise,
+  state: fulfilled (or pending, rejected),
+  result: data
+}
+Once we get the Promise, we attach a callback function to it using .then().
+It will be called only when the Promise has been resolved — this way we achieve trust over the callbacks.
+
+Now inversion of control is resolved.
+But we still have one more main issue: callback hell.
+
+To resolve that, we use Promise chaining.
+In callback hell (pyramid of doom – very ugly and hard to maintain), we pass one callback into another repeatedly.
+So it grows horizontally.
+
+Example of Callback Hell:
+
+javascript
+Copy
+Edit
+orderPlace(cart, function (orderId) {
+    redirectToPayment(orderId, function (paymentId) {
+        orderSummary(paymentId, function (summary) {
+            console.log("summary");
+        });
+    });
+});
+To avoid that, we use Promise chaining — in one Promise, we pass another function.
+Once the Promise is resolved, it calls our callback automatically and repeatedly.
+
+Promise chaining example:
+
+javascript
+Copy
+Edit
+const promise = orderPlace();
+
+promise.then(function (orderId) {
+    return redirectToPayment(orderId);
+}).then(function (paymentId) {
+    return orderSummary(paymentId);
+});
+Or another way:
+
+javascript
+Copy
+Edit
+const promises = orderPlace()
+    .then(function (orderId) {
+        return redirectToPayment(orderId);
+    })
+    .then(function (paymentId) {
+        return orderSummary(paymentId);
+    });
+To use one Promise’s result in another, we should return the result from the .then() block.
+
+To represent callbacks in Promise chaining, instead of anonymous functions, we can use arrow functions as well — it’s up to the developer’s decision.
+
+Now it does not grow horizontally but follows a vertical, readable order.
