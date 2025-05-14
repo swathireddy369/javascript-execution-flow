@@ -1308,3 +1308,80 @@ handler2().catch((err) => console.log(err)); // here we need to attach failure c
 ```
 
 https://claude.ai/public/artifacts/86bdb625-9de1-49da-b5c6-99d3460e8465
+
+
+
+whereever js runs there the JSRE will exist 
+
+
+# Understanding 'this' Keyword in JavaScript
+
+## In Global Scope
+```javascript
+console.log("global object", this); // It refers to the global object
+```
+- The global object depends on JavaScript runtime environment
+- In browsers: `window` object
+- In Node.js: `global` object
+
+## In Functions
+The behavior depends on strict mode and how the function is called:
+
+### Strict Mode
+```javascript
+"use strict"
+function x() {
+    console.log(this); // undefined
+}
+console.log("strict mode", x());
+```
+
+### Non-Strict Mode
+```javascript
+function y() {
+    console.log(this); // undefined, but substituted with window (in browser)
+}
+```
+- In non-strict mode, if `this` references undefined, it's replaced with the global object (this substitution)
+- In browsers, the global object is `window`
+
+## Function Calling Context
+The value of `this` also depends on how the function is called:
+
+```javascript
+console.log("normal calling", y()); // window (due to substitution)
+console.log("window.y();", window.y()); // window
+```
+
+## In Objects (Methods)
+
+### Regular Function as Method
+```javascript
+const obj = {
+    x: 9,
+    y: function() { // This is called a method (function inside object)
+        console.log(this); // References the entire obj
+    }
+}
+console.log("obj func", obj.y());
+```
+
+### Arrow Function as Method
+```javascript
+const obj1 = {
+    x: 9,
+    y: () => { // Arrow function as method
+        console.log(this); // References enclosing lexical context (window)
+    }
+}
+console.log("arrow", obj1.y());
+```
+- Arrow functions don't have their own `this` reference
+- They use the `this` value from their enclosing lexical context
+
+## In DOM Event Handlers
+```html
+<button onclick={alert(this)}>click me</button> <!-- 'this' refers to the button element -->
+```
+
+https://claude.ai/public/artifacts/08e511d6-c865-4c21-b7de-26bb5afa8cfa
