@@ -1049,3 +1049,262 @@ To use one Promise’s result in another, we should return the result from the .
 To represent callbacks in Promise chaining, instead of anonymous functions, we can use arrow functions as well — it’s up to the developer’s decision.
 
 Now it does not grow horizontally but follows a vertical, readable order.
+
+https://claude.ai/public/artifacts/077cb0df-d099-42db-b0b0-8942b66f3ebc
+
+
+
+Day-10:
+
+// Create a new promise using the Promise constructor.
+// It takes a callback function as an argument, which has two parameters: resolve and reject — these are given by JS.
+
+// Based on the scenario, the promise will either be resolved or rejected.
+// If resolved, we simply return: resolve(value);
+// If rejected, we throw an error using: reject(new Error("error message"));
+
+// All the above part is related to the producer of the promise.
+
+// Now coming to the consumer part:
+// When we are receiving a promise, we can attach a callback function to handle the resolved value
+// and a failure callback function to handle rejected cases — using .then and .catch respectively.
+
+// To handle a resolved promise, we use:
+// promise.then() — here we receive the resolved value, and if we want to use that value in the next step, we should return it from this callback.
+
+// To handle errors, we use .catch():
+// It catches any error thrown in the promise chain above it.
+// If we want to continue processing even after a rejection, we can place .catch() just below that promise.
+// Once the error is handled, the rest of the steps will continue their work.
+
+# Making Sense of JavaScript Promises 🔄
+
+Here's my notes on how Promises work in JavaScript:
+
+## The Basics of Promises:
+
+### Producer Side:
+- Create a new promise using the Promise constructor
+- It takes a callback with two parameters: resolve and reject (given by JS)
+- Based on the scenario, promise either resolves or rejects
+- If resolved: `resolve(value)`
+- If rejected: `reject(new Error("error message"))`
+
+### Consumer Side:
+- When receiving a promise, attach callbacks with `.then` and `.catch`
+- For resolved promises: `promise.then()` - we get the resolved value
+- To use that value in next step, return it from this callback
+- For errors: `.catch()` catches any error thrown in promise chain above it
+- If we want to continue even after a rejection, place `.catch()` right below
+- Once error is handled, rest of steps continue working
+
+## Real Example - Shopping Cart Flow:
+
+```javascript
+const cart = ["Kurta", "shoes", "watch", "bag"];
+
+// Version 1: Promise Chain with Complete Syntax
+const promise = createOrder(cart);
+promise.then(function(cartId) {
+    console.log("createOrder", cartId);
+    return proceedToPayment(cartId);
+}).catch(function(err) {
+    console.log("error", err); // handle reject
+}).then(function(paymentInfo) {
+    console.log("proceedToPayment", paymentInfo);
+    return orderSummary(paymentInfo);
+}).then(function(summmaryId) {
+    console.log("orderSummary", summmaryId);
+    updateWallet(summmaryId);
+}).catch(function(err) {
+    console.log("error", err); // handle reject
+});
+
+// Version 2: Cleaner Way
+createOrder(cart)
+  .then((cartId) => proceedToPayment(cartId))
+  .then((paymentInfo) => orderSummary(paymentInfo))
+  .then((summmaryId) => updateWallet(summmaryId))
+  .catch((err) => console.log("error", err)) // handle reject
+```
+
+This avoids promise hell (similar to callback hell) where code grows horizontally and becomes hard to read.
+
+Each function (createOrder, proceedToPayment, etc.) returns its own promise, making the chain work properly.
+
+#JavaScript #WebDevelopment #Promises #AsyncProgramming
+
+
+https://claude.ai/public/artifacts/07a61b9b-fa25-4cd2-a017-c568b8d48479
+
+
+Promise types:
+# JavaScript Promise Combinators Explained
+
+Here's my notes on the 4 types of Promise combinators in JavaScript:
+
+## 1) Promise.all()
+- Waits for all promises to be settled
+- Success case: Returns array of all resolved values when ALL promises resolve
+- Failure case: Rejects IMMEDIATELY when ANY promise rejects
+- Returns the error of the first rejected promise
+- Example:
+```javascript
+Promise.all([p1, p2, p3])
+  .then((value) => console.log("Promise.all", value))
+  .catch((err) => console.log(err))
+```
+
+## 2) Promise.allSettled()
+- Similar to Promise.all() but handles failures differently
+- Waits for ALL promises to be settled (either resolved or rejected)
+- Always returns results of all promises, whether success or failure
+- Each result has a status ("fulfilled" or "rejected") and value/reason
+- Example:
+```javascript
+Promise.allSettled([p1, p2, p3])
+  .then((value) => console.log("Promise.allSettled", value))
+  .catch((err) => console.log(err))
+```
+
+## 3) Promise.race()
+- Returns as soon as ANY promise settles (either resolved or rejected)
+- Doesn't wait for others to complete
+- Returns first settled result (could be success or error)
+- Example:
+```javascript
+Promise.race([p1, p2, p3])
+  .then((value) => console.log("Promise.race", value))
+  .catch((err) => console.log(err))
+```
+
+## 4) Promise.any()
+- Returns as soon as ANY promise is FULFILLED (successfully resolved)
+- Ignores rejections unless ALL promises reject
+- Only catches if ALL promises reject
+- Example:
+```javascript
+Promise.any([p1, p2, p3])
+  .then((value) => console.log("Promise.any", value))
+  .catch((err) => console.log(err))
+```
+
+## Promise Result Objects
+- Success object: `{status: "fulfilled", value: "p2 success"}`
+- Failure object: `{status: "rejected", reason: "p2 fail"}`
+- allSettled returns array of these objects
+- all just returns array of values (or throws error)
+
+#JavaScript #Promises #WebDevelopment #AsyncProgramming
+
+https://claude.ai/public/artifacts/75155264-be40-4992-8a77-a12c7f07e0f0
+
+
+
+Day-11:
+
+# Understanding Async/Await in JavaScript
+
+## Async Keyword
+- Async is a keyword used to define a function which runs asynchronously
+- It always returns a promise
+- Even if it returns a value, that value will be automatically wrapped in a promise
+
+## Basic Promise Example
+```javascript
+const p = new Promise((resolve, reject) => {
+    resolve("resolved");
+});
+
+function handle() {
+   p.then((ms) => console.log(ms));
+}
+```
+
+## Promise Timing Examples
+```javascript
+const p1 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("hi swathi");
+    }, 20000)
+});
+
+const p2 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("hi swathi");
+    }, 40000)
+});
+```
+
+## Async Without Await
+```javascript
+async function handle() { // returns promise only
+   p1.then((ms) => console.log(ms)); // then this
+   console.log("how are you swathi", p1); // this will be printed first as JS does not wait for anything
+   
+   // But what if in real world scenario if the promise result is needed in further transaction
+   // or if previous transaction result is needed in next? Then it doesn't work right,
+   // so await came into picture
+}
+```
+
+## Async With Await
+```javascript
+async function handle1() { // returns promise only
+    console.log(":helloo");
+    
+    const data = await p1; // 10sec
+    // Call stack: First whenever handle1 enters into call stack it starts executing line by line
+    // so first prints hello and when it encounters await, then the function execution will be suspended
+    // from call stack but JS doesn't stop its execution while callstack is ready to execute other events
+    // which ever comes into it without blocking main thread
+    
+    // Once the promise is settled then it goes ahead into call stack and starts executing from where it was called
+    // If it encounters await in our code and if it is already settled then simply returns it
+    // Otherwise again the function execution will be suspended and it will wait until promise to be settled
+    // then it appears in call stack to resume execution from where it was called.
+    
+    console.log(data); // after promise settled this line will be executed
+    console.log("how are you"); 
+    
+    const data1 = await p2; // 5sec
+    console.log(data1); // after promise settled this line will be executed
+    console.log("how are you2");
+}
+```
+
+## Real Example with API
+```javascript
+const API_URL = "https://api.github.com/user"; // fetch is browser API, not JS one
+
+async function handler2() {
+  const data = await fetch(API_URL); // it will return the response stream
+  // from that response stream we need to get response JSON, it's again a promise
+  const res = await data.json();
+  console.log(res);
+}
+
+// handler2();
+```
+
+## Error Handling in Async/Await
+```javascript
+// To handle errors we use try-catch in our async and await 
+// whereas in promise it's then and catch
+
+// Method 1: Try-catch inside function
+async function handler2() {
+    try {
+        const data = await fetch(API_URL);
+        const res = await data.json();
+        console.log(res);
+    } catch(err) { 
+        console.log(err);
+    }
+}
+
+// Method 2: Attaching catch to function call
+handler2().catch((err) => console.log(err)); // here we need to attach failure callback to it
+```
+
+https://claude.ai/public/artifacts/86bdb625-9de1-49da-b5c6-99d3460e8465
