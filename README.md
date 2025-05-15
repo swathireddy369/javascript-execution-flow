@@ -1385,3 +1385,162 @@ console.log("arrow", obj1.y());
 ```
 
 https://claude.ai/public/artifacts/08e511d6-c865-4c21-b7de-26bb5afa8cfa
+
+
+
+
+
+
+
+
+
+
+Day-12:
+
+
+
+
+const obj1={
+    first:"swathi",
+    last:"Amaravadi",
+    getName:function(town){
+        console.log(this.first+" "+this.last+" "+town);
+        
+    }
+}
+ const getFullName=function(town,state){
+        console.log(this.first+" "+this.last+" "+town+" "+state);
+        
+    }
+const obj2={
+    first:"Rajesh",
+    last:"kodakandla",
+   
+}
+// what if we want getName in obj2 as well, so here call came into Picture
+
+obj1.getName();//this is just simple this refers to current obj
+obj1.getName.call(obj2);//we are calling obj1.getName and but change this reference to obj2
+obj1.getName.call(obj2,"Khammam");
+// in this case if we want to use same function for multiple objs we can simple seperate that function from obj1
+getFullName.call(obj1,"hyderabad")
+getFullName.call(obj2,"hyderabad")//this is common function and mention obj1 for this reference and next we can pass arguments as many as you want
+//Apply
+getFullName.apply(obj1,["hyderabad","Telangana"])//same as call but should pass argsn in the form of array list in the order whoch we want to receive
+
+//bind
+
+// bind is similar to call but we just bind the function and store that in a avariable for future use then later we can call that function
+// we donot call that function but we just bind that to a variable and call that later
+
+
+const bindingVar=getFullName.bind(obj2);
+bindingVar("usa");
+
+
+
+
+=================================
+JavaScript Advanced Concepts - Organized Notes
+1. Call, Apply, and Bind Methods
+These methods are mainly used for sharing methods between objects and controlling the this reference in JavaScript functions.
+Call Method
+
+Syntax: function.call(objectReference, arg1, arg2, ...)
+Purpose: Calls a function with a specified this value and arguments provided individually
+Example from your notes:
+javascriptobj1.getName(); // Normal call - 'this' refers to obj1
+obj1.getName.call(obj2); // Calling obj1's method but 'this' refers to obj2
+obj1.getName.call(obj2, "Khammam"); // With additional arguments
+
+
+Apply Method
+
+Syntax: function.apply(objectReference, [arg1, arg2, ...])
+Purpose: Same as call but arguments are passed as an array
+Example from your notes:
+javascriptgetFullName.apply(obj1, ["hyderabad", "Telangana"]);
+
+
+Bind Method
+
+Syntax: function.bind(objectReference, arg1, arg2, ...)
+Purpose: Returns a new function with the specified this value and initial arguments
+Unlike call/apply, it doesn't invoke the function immediately but creates a bound function for later use
+Example from your notes:
+javascriptconst bindingVar = getFullName.bind(obj2);
+bindingVar("usa");
+
+
+2. Debouncing
+Debouncing is a programming technique used to limit the rate at which a function can be executed.
+
+Purpose: Prevents a function from being called multiple times in quick succession
+Common use cases: Search inputs, resize events, scroll events
+Implementation in your notes:
+javascriptconst doSomeMagic = (fn, d) => {
+    let timer;
+    return function() {
+        clearInterval(timer);
+        timer = setTimeout(() => {
+            fn();
+        }, d);
+    };
+};
+
+// Usage
+const betterFunction = doSomeMagic(getData, 500);
+
+How it works:
+
+A timer is set when the function is first called
+If the function is called again before the timer completes, the timer resets
+The actual function only runs once after the user stops calling it for the delay period
+
+
+
+3. Function Currying
+Function currying is a technique to transform a function with multiple arguments into a sequence of functions, each taking a single argument.
+Using Bind Method
+javascriptfunction multiply(x, y) {
+    let z = x * y;
+    console.log(z);
+}
+
+const multiplyTwo = multiply.bind(this, 2); // Pre-sets first argument to 2
+multiplyTwo(3); // Outputs 6 (2*3)
+Using Closures
+javascriptconst multiple = function(x) {
+    return function(y) {
+        console.log(x * y);
+    };
+};
+
+const multiplyTwos = multiple(2);
+multiplyTwos(3); // Outputs 6 (2*3)
+// Alternative: multiple(3)(6); // Outputs 18 (3*6)
+4. Polyfill for Bind Method
+A polyfill is code that provides modern functionality in older browsers that don't natively support it.
+javascriptFunction.prototype.myBind = function(...args) {
+    let params = args.slice(1);
+    const obj = this; // Reference to the original function
+    
+    return function(...subargs) {
+        obj.apply(args[0], [...params, ...subargs]);
+    };
+};
+
+// Usage
+const getName2 = getFullName.myBind(obj1, "hyderabad", "te");
+getName2("hello");
+How your polyfill works:
+
+Stores the original function in obj (using this)
+Takes the first argument as the context object
+Extracts remaining arguments as pre-bound parameters
+Returns a new function that accepts additional arguments
+When called, it uses apply to invoke the original function with the right context
+Combines pre-bound parameters with new parameters
+https://claude.ai/public/artifacts/e2892349-32ca-4403-abed-80f3b1d6c464
+
+
