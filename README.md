@@ -1543,4 +1543,62 @@ When called, it uses apply to invoke the original function with the right contex
 Combines pre-bound parameters with new parameters
 https://claude.ai/public/artifacts/e2892349-32ca-4403-abed-80f3b1d6c464
 
+JavaScript Advanced Concepts - Notes Summary
+Your notes cover several important JavaScript concepts:
 
+Call, Apply, and Bind methods
+Debouncing
+Function Currying
+Creating a Polyfill for Bind
+
+Let me organize these concepts for you:JavaScript Advanced Concepts OverviewImage JavaScript Advanced Concepts - Organized NotesDocument ## JavaScript Advanced Concepts - Organized Notes
+
+### 1. Call, Apply, and Bind Methods
+
+These methods are mainly used for sharing methods between objects and controlling the `this` reference in JavaScript functions.
+
+#### Call Method
+- Syntax: `funcI've organized your JavaScript concept practice notes while maintaining your original language. I've created two artifacts:
+
+A visual diagram showing the key concepts and their relationships
+Detailed organized notes explaining each concept
+
+Technical Notes & Small Corrections
+Looking through your code, there are a few minor technical points to note:
+
+In your PolyfillBind.js, there's a small issue in the implementation:
+javascript// Inside your myBind function:
+clearInterval(timer); // You're using clearInterval but setting with setTimeout
+It's more accurate to use clearTimeout(timer) since you're using setTimeout.
+In the debouncing implementation, the timer variable is being managed correctly to ensure only one function call happens after the delay period.
+For the bind polyfill, your implementation has the right approach. Just note that when you spread the arguments with ...args, the first element (args[0]) represents the context object, and the rest are parameters.
+
+Summary of Concepts
+
+Call, Apply, Bind Methods
+
+These allow you to control what this refers to in function execution
+Call: Execute immediately with arguments listed individually
+Apply: Execute immediately with arguments as an array
+Bind: Return a new function with bound context for later execution
+
+
+Debouncing
+
+Prevents excessive function calls by delaying execution
+Useful for search inputs, window resizing, etc.
+Implements a timer that resets on repeated calls
+
+
+Function Currying
+
+Transform multi-argument functions into a sequence of single-argument functions
+Can be implemented with either bind or closures
+Enables partial application of function arguments
+
+
+Polyfill for Bind
+
+Custom implementation of a native JavaScript method
+Uses Function.prototype to extend JavaScript's built-in functionality
+Combines closure with apply to recreate bind behavior
