@@ -1602,3 +1602,457 @@ Polyfill for Bind
 Custom implementation of a native JavaScript method
 Uses Function.prototype to extend JavaScript's built-in functionality
 Combines closure with apply to recreate bind behavior
+
+Day-13:
+
+Sricpt:here its start with html parsing where ever it encounters sripti then it pauses the html parsing and fetch script form network then it executes that scripot once done tiwth scrit then html parsing will be resumed untill html is paused,ths is general
+
+Async: if we put async it startw tih html parsing when encounters scriot then it parallely fecthes from netwrok once it fected then only html parsing will be paused an dscriot is executiing then nonce script execution is done then html prsing will be continues some pausing time is less
+
+defer:
+starts with html parsing when encounter script it parallely fecthes from netwokr once html parsing is done then only it start executing script ,no html pausing time here
+
+
+soo final observation is if we have depende on sripti on another then defer would be better it follows order where in no depenedeny between sript like any other script (extenrl script needed)then async will be fine
+
+Understanding Script Loading Strategies in HTML
+Based on your notes, I'll organize this information about how different script loading attributes work. Let me create a clear explanation with a visual representation.
+Script Loading Strategies
+Regular Script Loading
+
+HTML parsing begins
+When <script> tag is encountered, HTML parsing PAUSES
+Script is fetched from network
+Script is executed
+Only after script execution completes, HTML parsing RESUMES
+Results in longer page load times due to blocking behavior
+
+Async Loading (async attribute)
+
+HTML parsing begins
+When <script async> is encountered, HTML parsing CONTINUES
+Script is fetched from network IN PARALLEL with HTML parsing
+When script download completes, HTML parsing PAUSES
+Script is executed
+After script execution completes, HTML parsing RESUMES
+Reduces page load time, but scripts may execute in unpredictable order
+
+Defer Loading (defer attribute)
+
+HTML parsing begins
+When <script defer> is encountered, HTML parsing CONTINUES
+Script is fetched from network IN PARALLEL with HTML parsing
+HTML parsing completes fully WITHOUT interruption
+Only after HTML parsing is 100% complete, deferred scripts execute
+Scripts with defer execute in the same order they appear in the document
+Provides the most efficient page load with predictable script execution order
+
+When to Use Each Strategy
+
+Regular Scripts: When the script is essential for initial page rendering
+Async: When scripts are independent and don't rely on each other
+Defer: When script order matters and scripts can wait until after HTML is parsed
+
+Key Takeaways
+
+Regular Script: Completely blocks HTML parsing while fetching and executing scripts, causing slowest page rendering.
+Async Script: Improves performance by fetching scripts in parallel with HTML parsing, only blocking briefly during execution. Best for independent scripts (like analytics) where execution order doesn't matter.
+Defer Script: Offers best performance by never interrupting HTML parsing. Scripts execute in their document order, but only after HTML is fully parsed. Ideal for scripts that depend on each other or on DOM elements.
+
+https://claude.ai/public/artifacts/db831113-986c-4ddd-bdc9-3549a12ee723
+
+event bubbling and capturing(tricking)
+
+
+document.querySelector("#grandParent").addEventListener("click",()=>{
+    console.log("grandParent");
+},true)
+document.querySelector("#parent").addEventListener("click",(e)=>{
+   
+    console.log("parent");
+},true)
+document.querySelector("#child").addEventListener("click",(e)=>{
+     e.stopPropagation();
+    console.log("child");
+},false)
+//here event bubbling the events are bulled from current to end of dom in upward direction n
+// where as in capturing or trciking the evenyts are propagated from starting of dom to current div in downlward motion
+//while adding event listeners by mention true is does capturing where false for bubbling
+// so as per w3c conclusion  the events are propagated in cycle motion like first it does tricking and then bubbling if we mention in specififc for particluar div that occures as per true or pfalse
+
+
+// to avoid this we can control propagation by using else.stopPropagation();
+
+// in this case wherever we mention stopPropagation the propogation of event does not go beyond that in in cyle in bubbling or capturing
+
+
+
+Understanding Event Propagation in JavaScript
+Based on your notes, I'll organize the information about event propagation (capturing and bubbling) in JavaScript.
+Event Propagation Phases
+Events in JavaScript propagate in two phases:
+
+Capturing Phase (Trickling): Events propagate from the root of the DOM tree down to the target element
+Bubbling Phase: Events propagate from the target element back up to the root of the DOM tree
+
+Event Listener Parameters
+When adding event listeners with addEventListener, the third parameter controls which phase the listener responds to:
+
+true: Capturing phase (top-down)
+false or omitted: Bubbling phase (bottom-up) - this is the default
+
+Controlling Propagation
+
+event.stopPropagation(): Stops the event from continuing its propagation path (in either phase)
+This prevents the event from traveling further up or down the DOM tree
+
+Your Code Example Analysis
+In your example:
+javascriptdocument.querySelector("#grandParent").addEventListener("click", () => {
+    console.log("grandParent");
+}, true) // Capturing phase
+
+document.querySelector("#parent").addEventListener("click", (e) => {
+    console.log("parent");
+}, true) // Capturing phase
+
+document.querySelector("#child").addEventListener("click", (e) => {
+    e.stopPropagation();
+    console.log("child");
+}, false) // Bubbling phase
+When clicking on the child element, the events will trigger in this order:
+
+"grandParent" logs (capturing phase, traveling down)
+"parent" logs (capturing phase, traveling down)
+"child" logs (bubbling phase, at target)
+No more propagation occurs because e.stopPropagation() was called in the child handler
+
+Your understanding is correct! According to W3C specifications, events propagate in a cycle - first capturing (top-down) and then bubbling (bottom-up). Calling stopPropagation() prevents the event from continuing in either direction.JavaScript Event Propagation VisualizationImage Expected Console Output for a Click on the Child Element
+If someone clicks on the child element in your example, here's what will happen:
+
+First, the capturing phase starts from the document root and moves down:
+
+"grandParent" logs (because its listener has true for capturing)
+"parent" logs (because its listener has true for capturing)
+
+
+Then, at the target element (child):
+
+"child" logs
+e.stopPropagation() is called
+
+
+The propagation stops completely, so:
+
+The event doesn't bubble up to parent or grandparent
+No other handlers are called
+
+
+
+Key Points About Event Propagation
+
+Events always follow this sequence: capturing phase → target phase → bubbling phase
+The third parameter in addEventListener determines which phase the handler responds to:
+
+addEventListener(event, handler, true) - capturing phase
+addEventListener(event, handler, false) - bubbling phase (default)
+
+
+e.stopPropagation() prevents the event from continuing in either direction from where it's called
+When an event reaches its target element, both capturing and bubbling handlers on that element will fire (in capturing → bubbling order)
+
+https://claude.ai/public/artifacts/8ebf00a0-4587-4d46-b664-febc77767984
+
+
+event Delegation:
+// here to avoid multiple event handlers we are adding handler to parent as parent listens to all its child evnts as we know event bubbling the event propagation will be bubbled up so that byssuing that we can ahndle this by adding event listener to the parent concept is called event deletgation m
+//so this we can avoid performance bottle necks as if we have ultiple event im application iyty will lead to slow performance and by havimg delegtion we have chave less codee an dless memory and more performace 
+
+//but here we have cons as well some evt sdoes not bubbled up like blur an dfocus so that we need to handle them speerately adn we shoudl not use stoppropagatuon if we use thet dthe delegation does not work as delegation works under the power of event bubbling
+document.querySelector("#category").addEventListener("click",(e)=>{
+console.log(e.target.id,"clicked");
+// console.log("are you there");
+})
+
+document.querySelector("#login").addEventListener("keyup",(e)=>{
+console.log("make me into uppercase",e.target.dataset.uppercase,e.target.value);
+if(e.target.dataset.uppercase != undefined){
+    e.target.value= e.target.value.toUpperCase();
+}
+
+})
+
+
+Understanding Event Delegation in JavaScript
+Based on your notes, I'll organize the information about event delegation in JavaScript.
+What is Event Delegation?
+Event delegation is a technique where we add a single event listener to a parent element instead of adding many event listeners to individual child elements. This pattern leverages the event bubbling phase of event propagation.
+How Event Delegation Works
+
+Events that occur on child elements bubble up to their parent elements
+A single event handler on the parent catches all events from its children
+Using event.target, we can identify which specific child element triggered the event
+
+Benefits of Event Delegation
+
+Performance Improvement: Fewer event listeners means less memory usage
+Less Code: Only need to write one event handler instead of many
+Dynamic Elements: Automatically works for elements added to the DOM later
+Cleaner Code: Centralizes event handling logic
+
+Limitations of Event Delegation
+
+Some events don't bubble up (e.g., focus, blur) so they can't be delegated
+If stopPropagation() is used on child elements, delegation won't work for those events
+Requires additional logic to determine which element triggered the event
+
+Less Dom Manipulation 
+
+Your Code Example Analysis
+In your example:
+javascript// Event delegation for category items
+document.querySelector("#category").addEventListener("click", (e) => {
+    console.log(e.target.id, "clicked");
+})
+
+// Event delegation for form inputs with data attribute handling
+document.querySelector("#login").addEventListener("keyup", (e) => {
+    console.log("make me into uppercase", e.target.dataset.uppercase, e.target.value);
+    if(e.target.dataset.uppercase != undefined){
+        e.target.value = e.target.value.toUpperCase();
+    }
+})
+This demonstrates two common use cases for event delegation:
+
+Handling clicks on a list of items (laptops, cameras, shoes)
+Applying behavior to specific form inputs based on their data attributes
+
+Your understanding of event delegation is correct! It's a powerful pattern that uses event bubbling to improve performance and reduce code complexity.JavaScript Event Delegation VisualizationImage Practical Application of Event Delegation
+Example 1: Category List
+javascriptdocument.querySelector("#category").addEventListener("click", (e) => {
+    console.log(e.target.id, "clicked");
+    // Perform actions based on which item was clicked
+})
+When you click on any list item (laptop, camera, dresses), the event bubbles up to the #category parent, where your single handler captures it. The e.target property identifies exactly which item was clicked.
+Example 2: Form Input with Data Attributes
+javascriptdocument.querySelector("#login").addEventListener("keyup", (e) => {
+    if(e.target.dataset.uppercase != undefined) {
+        e.target.value = e.target.value.toUpperCase();
+    }
+})
+This demonstrates a clever use of data attributes with event delegation. By adding data-uppercase only to the fields that need this behavior, a single event handler can apply different behaviors to different inputs.
+When to Use Event Delegation
+
+Lists or grids with many items: Menus, tables, product listings
+Dynamic content: When elements are frequently added/removed from the DOM
+Forms with multiple inputs: Apply validation or formatting rules
+Large applications: Reduce memory footprint and improve performance
+
+Important Considerations
+
+Only events that bubble can be delegated (click, keyup, submit, etc.)
+Events like focus, blur, and mouseenter don't bubble naturally
+Never use e.stopPropagation() on elements that need delegation
+Always check e.target to ensure you're handling the right element
+
+
+https://claude.ai/public/artifacts/9e51439c-aa8d-48bb-8818-b1a871c2ce6b
+
+prototype and prototypeinheritance:
+Understanding JavaScript Prototypal Inheritance
+Based on your notes, I'll organize the information about JavaScript's prototype chain and inheritance.
+JavaScript Prototype Chain Basics
+In JavaScript, when you create arrays or objects, they automatically get linked to a prototype that contains built-in methods:
+javascriptlet arr = ["swathi", "raji", "reddy"];
+// arr can access all Array methods through its prototype
+// arr.__proto__ is the same as Array.prototype
+
+let obj = {
+    name: "swathi",
+    city: "khammam"
+}
+// obj.__proto__ is the same as Object.prototype
+The Prototype Chain
+JavaScript follows a prototype chain when looking for properties and methods:
+
+First, it checks the object itself
+If not found, it checks the object's __proto__ (its prototype)
+If still not found, it checks the prototype's prototype
+This continues until it reaches null
+
+For arrays, the chain looks like:
+
+arr.__proto__ → Array.prototype
+arr.__proto__.__proto__ → Object.prototype
+arr.__proto__.__proto__.__proto__ → null
+
+Implementing Prototypal Inheritance
+You can set an object's prototype to another object to create inheritance:
+javascriptlet obj3 = {
+    name: "swathi",
+    city: "khammam",
+    getName: function() {
+        console.log(this.name + " " + this.city);
+    }
+}
+
+let obj4 = {
+    name: "rajesh",
+    // city is not defined here
+}
+
+// obj4.getName(); // Would throw an error initially
+
+// Set up inheritance
+obj4.__proto__ = obj3;
+
+// Now obj4 can use methods from obj3
+obj4.getName(); // Outputs: "rajesh khammam"
+When obj4.getName() is called:
+
+JavaScript first checks if obj4 has a getName method (it doesn't)
+Then it checks obj4.__proto__ (which is obj3) and finds getName
+It calls the method with this referring to obj4
+The method uses obj4.name ("rajesh") and falls back to obj3.city ("khammam") since obj4 doesn't have city
+
+This is how prototypal inheritance allows objects to access properties and methods from their prototypes.JavaScript Prototypal Inheritance VisualizationImage JavaScript Prototypal Inheritance
+The __proto__ Connection
+In JavaScript, every object gets a special hidden property called __proto__ which connects it to its prototype:
+javascriptlet arr = ["swathi", "raji", "reddy"];
+// here once we create arr its accessible to use all Array methods just because of type array 
+// its allows to access all array methods
+// variable name does not matter type matters
+// if we see Array.prototype and arr.__proto__ gives same
+Similarly for objects:
+javascriptlet obj = {
+    name: "swathi",
+    city: "khammam",
+}
+let obj2 = {
+    name: "swathi",
+    city: "khammam"
+}
+//here also obj.__proto__ is same like Object.prototype
+The Prototype Chain Order
+The prototype chain always follows this hierarchy:
+
+Array.prototype (for arrays)
+Object.prototype (for all objects)
+null (end of chain)
+
+For arrays:
+javascript// arr.__proto__ points to Array.prototype
+// arr.__proto__.__proto__ equals obj.__proto__ (Object.prototype)
+// arr.__proto__.__proto__.__proto__ equals null (end of chain)
+Creating Inheritance Between Objects
+You can make one object inherit from another by setting its __proto__:
+javascriptlet obj3 = {
+    name: "swathi",
+    city: "khammam",
+    getName: function() {
+        console.log(this.name + " " + this.city);
+    }
+}
+
+let obj4 = {
+    name: "rajesh",
+    // city:"thummma" (commented out in your code)
+}
+
+console.log(obj3.__proto__); // Shows Object.prototype
+console.log(obj4.__proto__); // Shows Object.prototype
+console.log(obj3.getName()); // "swathi khammam"
+
+// console.log(obj4.getName()); // This would throw error before inheritance is set up
+
+// Set up inheritance
+obj4.__proto__ = obj3;
+console.log(obj4.getName()); // "rajesh khammam"
+How Property Lookup Works
+When you access obj4.getName():
+
+JavaScript checks if obj4 has a getName method - it doesn't
+It then checks obj4.__proto__ (which is obj3) and finds getName
+It executes the function with this referencing obj4
+Inside the function, this.name is "rajesh" (from obj4)
+For this.city, since obj4 doesn't have a city property, JavaScript checks obj4.__proto__ (which is obj3) and finds "khammam"
+
+https://claude.ai/public/artifacts/7ac2290d-5286-4472-9e93-d64a9aff8155
+
+
+throttling:
+throatt:
+
+
+Understanding Throttling in JavaScript
+I see you've shared your notes on throttling, a technique for limiting function execution rates. Let me organize this information clearly while keeping your original explanations intact.
+What is Throttling?
+Throttling is a technique that limits how often a function can be called within a specific time period. Unlike debouncing (which delays execution until activity stops), throttling ensures a function executes at most once per specified time interval, regardless of how many times it's triggered.
+When to Use Throttling
+Throttling is ideal for:
+
+Limiting API calls in search functions for e-commerce websites
+Handling window resize events
+Managing scroll events
+Processing continuous user inputs where you need regular updates but not for every input
+
+How Throttling Works
+Your implementation correctly demonstrates the throttling concept:
+javascriptconst expensive = () => {
+    console.log("i am expensive dont call me many times you will become poor");
+}
+
+const throttle = (fun, delayLimit) => {
+    let flag = true;
+    return function () {
+        console.log("flag", flag);
+        
+        if (flag == true) {
+            console.log("inflag", flag);
+            flag = false;
+            fun();
+            
+            setTimeout(() => {
+                flag = true;
+            }, delayLimit)
+        }
+    }
+}
+
+const betterExpensive = throttle(expensive, 900);
+betterExpensive(); // Will execute immediately
+betterExpensive(); // Ignored (within cooldown period)
+betterExpensive(); // Ignored (within cooldown period)
+// After 900ms, the function will be available to call again
+How Your Implementation Works
+
+The throttle function creates a closure that maintains a flag variable
+When the returned function is called:
+
+If flag is true, it executes the expensive function
+It then sets flag to false, preventing further calls
+A setTimeout resets the flag to true after the specified delay
+
+
+Any calls during the cooldown period are simply ignored
+
+Practical Applications
+
+Search functionality: Limiting API calls while a user types in a search box
+Window resizing: Running resize calculations at controlled intervals
+Input validation: Checking input at steady intervals during typing
+Scroll-based animations: Controlling how often scroll handlers fire
+
+Throttling vs. Debouncing
+
+Throttling: Executes at regular intervals during continuous activity (useful for continuous feedback)
+Debouncing: Waits until activity stops before executing (useful for final results)
+Throttling vs Normal Function ExecutionImage This visualization shows how throttling limits function execution. Without throttling, every event triggers the function (red dots). With throttling, only one function call is executed during each cooldown period (larger teal dots), while subsequent calls within that period are ignored (lighter gray dots).
+Your implementation works correctly by:
+
+Using a flag variable to track whether we're in a cooldown period
+Only executing the expensive function when the flag is true
+Setting a timeout to reset the flag after the specified delay
+
+This approach effectively limits how frequently your expensive operations (like API calls or DOM manipulations) run, significantly improving performance for event handlers that trigger frequently like window resizing, scrolling, or continuous user input.RetryClaude does not have the ability to run the code it generates yet.Claude can make mistakes. Please double-check responses. 3.7 Sonnet
+https://claude.ai/public/artifacts/b2193788-66d1-497b-b49d-9cacaa75941c
