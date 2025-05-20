@@ -965,9 +965,7 @@ So in that case, we are not aware of what’s happening behind the scenes — it
 
 Example of Inversion of Control:
 
-javascript
-Copy
-Edit
+
 orderPlace(cart, function redirectToPayment(orderId) {
     console.log("payment");
 });
@@ -975,9 +973,6 @@ orderPlace(cart, function redirectToPayment(orderId) {
 // this is defined as inversion of control
 // so to avoid that we use:
 
-javascript
-Copy
-Edit
 const promis = orderPlace();
 promis.then(function redirectToPayment() {
     console.log("payment")
@@ -2056,3 +2051,120 @@ Setting a timeout to reset the flag after the specified delay
 
 This approach effectively limits how frequently your expensive operations (like API calls or DOM manipulations) run, significantly improving performance for event handlers that trigger frequently like window resizing, scrolling, or continuous user input.RetryClaude does not have the ability to run the code it generates yet.Claude can make mistakes. Please double-check responses. 3.7 Sonnet
 https://claude.ai/public/artifacts/b2193788-66d1-497b-b49d-9cacaa75941c
+
+
+
+Day-14:
+
+Recurrsion:
+const user = {
+    name: "rajesh",
+    address: {
+        personal: {
+            city: "hyderabad",
+            area: "chaitanyapuri"
+        },
+        office: {
+            city: "hyderabad",
+            area: {
+                landmark:
+                    "chaitanyapuri"
+            }
+        }
+    }
+}
+let final = {};
+const prepareMagicObj = function (user, parent_path) {
+
+    for (let key in user) {
+        if (typeof (user[key]) == "object") {
+            prepareMagicObj(user[key], parent_path + "-" + key);
+        } else {
+              final = {
+                ...final,
+                [parent_path + "-" + key]: user[key]
+            };
+        }
+
+    }
+   
+ console.log(final);
+}
+
+prepareMagicObj(user, "user");
+
+
+LocalStorage:it stores the data in broswer 
+we can get that data whenever loginto same origin 
+origin: 
+protocal: http,https
+host: "www.s30.com"
+port:3000
+
+if you want to get your data these 3 should match other wise it will be not able to get  the data
+
+here ok to set data in localstorage we use localStorage.setItem("key","value")
+to get the data localStorage.getItem("key")
+const user={
+    name:"swathi",
+    id:333
+}
+
+localStorage.setItem("sample",user);
+//this is not work because to set data into localstorage everyting should be in string format
+so 
+localStorage.setItem("sample",JSON.stringify(user))
+nd if we get the data direclty after this it will give in string formate as we strinfyed the object to we need to parse it
+
+JSON.parse(localStorage.getItem("sample"))
+we can create our own functions to create this template once to use in our appplication without doing this tringfying and parsing multiple times 
+accessing data from localstroage is quite faster than getting api res from network
+
+
+again recurrsion problem:
+// const sum=function(val){
+//     console.log(val);
+//     return x
+// }
+
+// const x=function(val){
+//     console.log(val);
+//     return y;
+// }
+// const y=function(val){
+//     console.log(val);
+//     return z;
+// }
+// const z=function(val){
+//     console.log(val);
+
+// }
+const sum1 = function (a) {
+    return function (b) {
+        if (b) {
+            return sum1(a + b)
+        }
+        else {
+            return a;
+        }
+    }
+}
+
+
+
+const total = sum1(1)(2)(3)(4)();
+// console.log(sum1(1));
+// console.log(sum1(1)(2));
+// console.log(sum1(1)(2)(3));
+// console.log(sum1(1)(2)(3)(4));
+console.log(sum1(1)(2)(3)(4)());
+
+//es6
+const sum2 =  (a) => (b) =>  b? sum2(a + b):a;
+
+
+
+const efficient = sum2(1)(2)(3)(4)();
+console.log(efficient);
+
+
